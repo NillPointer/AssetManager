@@ -23,6 +23,7 @@
     <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\State.hpp" />
     <ClInclude Include="include\Textbox.h" />
+    <ClInclude Include="include\TextureHolder.hpp" />
     <ClInclude Include="include\TileMap.hpp" />
     <ClInclude Include="include\Window.h" />
   </ItemGroup>
@@ -49,13 +50,14 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(solutionDir)AssetManager\resources;$(solutionDir)AssetManager\src;$(solutionDir)AssetManager\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\imgui-SFML.cpp" />
-    <ClCompile Include="src\imgui.cpp" />
-    <ClCompile Include="src\imgui_demo.cpp" />
-    <ClCompile Include="src\imgui_draw.cpp" />
-    <ClCompile Include="src\imgui_widgets.cpp" />
+    <ClCompile Include="imgui\imgui-SFML.cpp" />
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\imgui_demo.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Textbox.cpp" />
+    <ClCompile Include="src\TextureHolder.cpp" />
     <ClCompile Include="src\TileMap.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>

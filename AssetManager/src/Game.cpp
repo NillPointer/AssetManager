@@ -1,20 +1,17 @@
 #include "Game.h"
 
-Game::Game() : m_window("Tiling", sf::Vector2u(1280, 800))
+Game::Game() : m_window("Tiling", sf::Vector2u(800, 600))
 
 {
 	m_clock.restart();
 	srand(time(nullptr));
-    //mapSprite_ = nullptr;
 
 	m_elapsed = 0.0f;
-	if (!map.load(//resourcePath()+//"terrain.png",
-		"resources/tileset.png", sf::Vector2u(32, 32), level, 16, 8))
-		// return -1;
+	m_TextureHolder.Load("resources/terrain.png", "test",{ 32,32 });
+	/*
+	if (!map.load("resources/tileset.png", sf::Vector2u(32, 32), level, 16, 8))
 		return;
-  //  else
-       // mapSprite_=new sf::Sprite(map)
-	
+		*/
 }
 
 Game::~Game(){}
@@ -39,6 +36,8 @@ void Game::HandleInput(){
 
 void Game::Update(){
 	m_window.Update();
+	ImGui::SFML::Update(*m_window.GetRenderWindow(), GetElapsed());
+	ShowTileEditing();
 //    float timestep = 1.0f / m_snake.GetSpeed();
 //    if(m_elapsed >= timestep){
 //
@@ -51,7 +50,29 @@ void Game::Update(){
 void Game::Render(){
 	m_window.BeginDraw();
 	// Render here.
-    m_window.GetRenderWindow()->draw(this->map);
-
+	m_window.GetRenderWindow()->draw(this->map);
+	ImGui::SFML::Render(*m_window.GetRenderWindow());
 	m_window.EndDraw();
+}
+
+void Game::ShowTileEditing() {
+	ImGuiWindowFlags window_flags = 0;
+	window_flags |= ImGuiWindowFlags_NoMove;
+	window_flags |= ImGuiWindowFlags_NoResize;
+	window_flags |= ImGuiWindowFlags_NoCollapse;
+
+	ImGui::SetNextWindowPos(ImVec2(0, ImGui::GetIO().DisplaySize.y - ImGui::GetIO().DisplaySize.y/2.5f));
+	ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y / 2.5f));
+
+	if (!ImGui::Begin("Tile Editor", nullptr, window_flags)) {
+		// Early out if the window is collapsed, as an optimization.
+		ImGui::End();
+		return;
+	}
+
+	for (int i = 0; i < m_TextureHolder.getCount(); i++) {
+		if (i % (int)(ImGui::GetIO().DisplaySize.x/32 - 9) != 0) ImGui::SameLine();
+		ImGui::ImageButton(sf::Sprite(*m_TextureHolder.GetTexture(), *m_TextureHolder.GetTextureRects("test"+std::to_string(i))), 4);
+	}
+	ImGui::End();
 }

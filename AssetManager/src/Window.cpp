@@ -1,5 +1,6 @@
 #include "Window.h"
 
+
 Window::Window(){ Setup("Window", sf::Vector2u(640, 480)); }
 Window::Window(const std::string& title, const sf::Vector2u& size){ Setup(title, size); }
 Window::~Window(){ Destroy(); }
@@ -17,6 +18,7 @@ void Window::Create(){
 		: sf::Style::Default);
 	m_window.create({ m_windowSize.x, m_windowSize.y, 32 },
 		m_windowTitle, style);
+	ImGui::SFML::Init(m_window);
 }
 
 void Window::Destroy(){
@@ -41,6 +43,7 @@ void Window::ToggleFullscreen(){
 void Window::Update(){
 	sf::Event event;
 	while(m_window.pollEvent(event)){
+		ImGui::SFML::ProcessEvent(event);
 		if(event.type == sf::Event::Closed){ m_isDone = true; }
 		else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape){ m_isDone = true; }
 		else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F5){ ToggleFullscreen(); }

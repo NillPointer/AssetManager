@@ -3,6 +3,7 @@
 #include "Textbox.h"
 #include "AssetManager.hpp"
 #include "TileMap.hpp"
+#include "TextureHolder.hpp"
 
 class Game{
 public:
@@ -18,11 +19,13 @@ public:
 
 	Window* GetWindow();
 private:
+	void ShowTileEditing();
+
 	Window m_window;
 	sf::Clock m_clock;
 	float m_elapsed;
     TileMap map;
-    sf::Sprite mapSprite_;
+	TextureHolder m_TextureHolder;
     const int level[128] =
     {
         0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -34,7 +37,4 @@ private:
         2, 0, 1, 10, 3, 0, 2, 2, 2, 0, 1, 1, 1, 1, 1, 1,
         0, 0, 1, 0, 3, 2, 2, 2, 0, 0, 0, 0, 1, 1, 1, 1,
     };
-
-
-
 };
