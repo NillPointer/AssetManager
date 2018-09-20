@@ -21,9 +21,8 @@
   <ItemGroup>
     <ClInclude Include="include\AssetManager.hpp" />
     <ClInclude Include="include\Game.h" />
-    <ClInclude Include="include\State.hpp" />
-    <ClInclude Include="include\Textbox.h" />
     <ClInclude Include="include\TextureHolder.hpp" />
+    <ClInclude Include="include\Tile.hpp" />
     <ClInclude Include="include\TileMap.hpp" />
     <ClInclude Include="include\Window.h" />
   </ItemGroup>
@@ -56,8 +55,8 @@
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\Textbox.cpp" />
     <ClCompile Include="src\TextureHolder.cpp" />
+    <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\TileMap.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>

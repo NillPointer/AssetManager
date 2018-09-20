@@ -10,13 +10,12 @@ class TextureHolder{
 public:
 	TextureHolder();
 	void Load(std::string filename, std::string textureName, sf::Vector2u spriteSize);
-	sf::IntRect *GetTextureRects(std::string const& filename);
+	sf::Texture *GetTexture(std::string const& filename);
 	int getCount();
-	sf::Texture *GetTexture();
 
 private:
-	std::map<std::string, sf::IntRect>m_TextureRects;
-	sf::Texture m_Texture;
+	std::map<std::string, sf::Texture> m_Textures;
+	sf::Image m_Image;
 };
 
 

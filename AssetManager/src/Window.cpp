@@ -25,7 +25,7 @@ void Window::Destroy(){
 	m_window.close();
 }
 
-void Window::BeginDraw(){ m_window.clear(sf::Color::Black); }
+void Window::BeginDraw(){ m_window.clear(sf::Color(125,125,125,0)); }
 void Window::EndDraw(){ m_window.display(); }
 
 bool Window::IsDone(){ return m_isDone; }
