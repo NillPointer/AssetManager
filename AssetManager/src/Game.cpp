@@ -1,17 +1,14 @@
+#include <math.h>
 #include "Game.h"
 
-Game::Game() : m_window("Tiling", sf::Vector2u(800, 600)), m_Vertices(sf::Quads, 32 * 32 * 4)
+Game::Game() : m_window("Tiling", sf::Vector2u(800, 600))
 
 {
 	m_clock.restart();
-	srand(time(nullptr));
+	srand(static_cast<unsigned int>(time(nullptr)));
 
 	m_elapsed = 0.0f;
 	m_TextureHolder.Load("resources/terrain.png", "terrain",{ 32,32 });
-	/*
-	if (!map.load("resources/tileset.png", sf::Vector2u(32, 32), level, 16, 8))
-		return;
-		*/
 }
 
 Game::~Game(){}
@@ -33,22 +30,14 @@ void Game::HandleInput() {
 		//left
 	}
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+	if (ImGui::IsMouseClicked(sf::Mouse::Left) && ImGui::GetMousePos().y < 300) {
+		auto pos = sf::Mouse::getPosition(*m_window.GetRenderWindow());
 		if (m_SelectedTexture == nullptr) return;
-		sf::Sprite s;
-		s.setTexture(*m_SelectedTexture);
-		s.setPosition({ (float)sf::Mouse::getPosition().x, (float)sf::Mouse::getPosition().y });
-		map.push_back(s);
-		/*sf::Vector2i m = sf::Mouse::getPosition(*m_window.GetRenderWindow());
-		m_Vertices[i++].position = sf::Vector2f(m.x, m.y);
-		m_Vertices[i++].position = sf::Vector2f(m.x + 32, m.y);
-		m_Vertices[i++].position = sf::Vector2f(m.x + 32, m.y + 32);
-		m_Vertices[i++].position = sf::Vector2f(m.x, m.y + 32);
-
-		m_Vertices[j++].texCoords = { 0, 0 };
-		m_Vertices[j++].texCoords = { 32, 0 };
-		m_Vertices[j++].texCoords = { 32, 32 };
-		m_Vertices[j++].texCoords = { 0, 32 };*/
+		Tile tile(m_SelectedTexture);
+		auto x = round(pos.x / 32) * 32;
+		auto y = round(pos.y / 32) * 32;
+		tile.setTilePosition(sf::Vector2f(x, y));
+		m_Map.add(tile);
 	}
 }
 
@@ -56,27 +45,32 @@ void Game::Update(){
 	m_window.Update();
 	ImGui::SFML::Update(*m_window.GetRenderWindow(), GetElapsed());
 	ShowTileEditing();
-	HandleInput();
-//    float timestep = 1.0f / m_snake.GetSpeed();
-//    if(m_elapsed >= timestep){
-//
-//
-//        m_elapsed -= timestep;
-//
-//    }
 }
 
 void Game::Render(){
 	m_window.BeginDraw();
 	// Render here.
-	//m_window.GetRenderWindow()->draw(this->map);
 
-	for (auto s : map)
-		m_window.GetRenderWindow()->draw(s);
-	/*if (m_SelectedTexture != nullptr)
-		m_window.GetRenderWindow()->draw(m_Vertices, m_SelectedTexture);
-	else
-		m_window.GetRenderWindow()->draw(m_Vertices);*/
+	m_window.Draw(m_Map);
+
+	sf::VertexArray lines(sf::Lines, 2 * round(ImGui::GetIO().DisplaySize.x / 32));
+	int i = 0;
+	for (int n = 32; n < ImGui::GetIO().DisplaySize.x; n += 32) {
+		lines[i++].position = { (float)n, 0 };
+		lines[i++].position = { (float)n, ImGui::GetIO().DisplaySize.y };
+	}
+
+	m_window.GetRenderWindow()->draw(lines);
+
+	i = 0;
+	lines.clear();
+	lines.resize(2 * round(ImGui::GetIO().DisplaySize.y / 32));
+	for(int n = 32; n < ImGui::GetIO().DisplaySize.y; n += 32) {
+		lines[i++].position = { 0, (float)n };
+		lines[i++].position = { ImGui::GetIO().DisplaySize.x, (float)n };
+	}
+
+	m_window.GetRenderWindow()->draw(lines);
 
 	ImGui::SFML::Render(*m_window.GetRenderWindow());
 	m_window.EndDraw();
@@ -99,13 +93,10 @@ void Game::ShowTileEditing() {
 	
 	auto n = (int)(ImGui::GetIO().DisplaySize.x / 32) - 9;
 	for (int i = 0; i < m_TextureHolder.getCount(); i++) {
-		auto s = m_TextureHolder.GetTexture("terrain" + std::to_string(i));
+		auto tex = m_TextureHolder.GetTexture("terrain" + std::to_string(i));
 		if (i % n != 0) ImGui::SameLine();
 		ImGui::PushID(i);
-		bool a = ImGui::ImageButton(*s, { 32,32 });
-		if (a) {
-			m_SelectedTexture = s;
-		}
+		if (ImGui::ImageButton(*tex, { 32,32 })) m_SelectedTexture = tex;
 		ImGui::PopID();
 	}
 	ImGui::End();

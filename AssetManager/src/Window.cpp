@@ -47,5 +47,14 @@ void Window::Update(){
 		if(event.type == sf::Event::Closed){ m_isDone = true; }
 		else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape){ m_isDone = true; }
 		else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F5){ ToggleFullscreen(); }
+		if (event.type == sf::Event::Resized) {
+			// update the view to the new size of the window
+			sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+			m_window.setView(sf::View(visibleArea));
+		}
 	}
+}
+
+void Window::Draw(sf::Drawable& l_drawable) {
+	m_window.draw(l_drawable);
 }

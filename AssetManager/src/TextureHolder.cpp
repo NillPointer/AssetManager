@@ -8,11 +8,10 @@ void TextureHolder::Load(std::string filename, std::string textureName, sf::Vect
 		return;
 	
 	auto counter = 0;
-	for (int y = 0; y < m_Image.getSize().y; y+=spriteSize.y) {
-		for (int x = 0; x < m_Image.getSize().x; x+=spriteSize.x) {
-			sf::IntRect rect(x, y, spriteSize.x, spriteSize.y);
+	for (unsigned y = 0; y < m_Image.getSize().y; y+=spriteSize.y) {
+		for (unsigned x = 0; x < m_Image.getSize().x; x+=spriteSize.x) {
 			sf::Texture text;
-			text.loadFromImage(m_Image, rect);
+			text.loadFromImage(m_Image, sf::IntRect(x, y, spriteSize.x, spriteSize.y));
 			m_Textures.emplace(textureName + std::to_string(counter++), text);
 		}
 	}
