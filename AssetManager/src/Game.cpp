@@ -49,10 +49,15 @@ void Game::handleInput() {
 		if (m_selectedTexture == nullptr) return;
 		Tile tile(m_selectedTexture);
 		auto mousePos = sf::Mouse::getPosition(*m_window.GetRenderWindow());
-		sf::Vector2i pos(round(mousePos.x / 32) * 32, round(mousePos.y / 32) * 32);
+		sf::Vector2i pos((int)round(mousePos.x / 32) * 32, (int)round(mousePos.y / 32) * 32);
 		sf::Vector2f tilePos = m_window.GetRenderWindow()->mapPixelToCoords(pos);
 		tile.setTilePosition(tilePos);
 		m_map.add(tile);
+	} else if (ImGui::IsMouseClicked(sf::Mouse::Right) && ImGui::GetMousePos().x > 32 * 6.7f) {
+		auto mousePos = sf::Mouse::getPosition(*m_window.GetRenderWindow());
+		sf::Vector2i pos((int)round(mousePos.x / 32) * 32, (int)round(mousePos.y / 32) * 32);
+		sf::Vector2f tilePos = m_window.GetRenderWindow()->mapPixelToCoords(pos);
+		m_map.remove(tilePos);
 	}
 }
 
@@ -68,7 +73,7 @@ void Game::render(){
 
 	m_window.Draw(m_map);
 
-	sf::VertexArray lines(sf::Lines, 2 * round(ImGui::GetIO().DisplaySize.x / 32));
+	sf::VertexArray lines(sf::Lines, 2 * (int)round(ImGui::GetIO().DisplaySize.x / 32));
 	int i = 0;
 	for (int n = 32; n < ImGui::GetIO().DisplaySize.x; n += 32) {
 		lines[i++].position = m_window.GetRenderWindow()->mapPixelToCoords({ n, 0 });
@@ -79,7 +84,7 @@ void Game::render(){
 
 	i = 0;
 	lines.clear();
-	lines.resize(2 * round(ImGui::GetIO().DisplaySize.y / 32));
+	lines.resize(2 * (int)round(ImGui::GetIO().DisplaySize.y / 32));
 	for(int n = 32; n < ImGui::GetIO().DisplaySize.y; n += 32) {
 		lines[i++].position = m_window.GetRenderWindow()->mapPixelToCoords({ 0, n });
 		lines[i++].position = m_window.GetRenderWindow()->mapPixelToCoords({ (int)ImGui::GetIO().DisplaySize.x, n });

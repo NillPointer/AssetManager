@@ -2,7 +2,7 @@
 #define TILEMAP_HPP
 
 #include <string>
-#include <vector>
+#include <list>
 #include "Tile.hpp"
 
 struct VectorComparator {
@@ -15,9 +15,9 @@ class TileMap : public sf::Drawable
 {
 public:
 	void add(Tile tile);
-	int size();
+	void remove(const sf::Vector2f &tilePos);
 private:
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const;
-	std::vector<Tile> m_Map;
+	std::list<Tile> m_map;
 };
 #endif /* TILEMAP_HPP */
