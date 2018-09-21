@@ -18,7 +18,8 @@ public:
 
 	bool IsDone();
 	bool IsFullscreen();
-	sf::RenderWindow* GetRenderWindow();
+	sf::RenderWindow *GetRenderWindow();
+	sf::View *GetView();
 	sf::Vector2u GetWindowSize();
 
 	void ToggleFullscreen();
@@ -30,6 +31,7 @@ private:
 	void Destroy();
 
 	sf::RenderWindow m_window;
+	sf::View m_view;
 	sf::Vector2u m_windowSize;
 	std::string m_windowTitle;
 	bool m_isDone;

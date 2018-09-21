@@ -18,6 +18,9 @@ void Window::Create(){
 		: sf::Style::Default);
 	m_window.create({ m_windowSize.x, m_windowSize.y, 32 },
 		m_windowTitle, style);
+	m_view = m_window.getDefaultView();
+	m_view.setCenter({ 0,0 });
+	m_window.setView(m_view);
 	ImGui::SFML::Init(m_window);
 }
 
@@ -31,7 +34,8 @@ void Window::EndDraw(){ m_window.display(); }
 bool Window::IsDone(){ return m_isDone; }
 bool Window::IsFullscreen(){ return m_isFullscreen; }
 
-sf::RenderWindow* Window::GetRenderWindow(){ return &m_window; }
+sf::RenderWindow *Window::GetRenderWindow(){ return &m_window; }
+sf::View *Window::GetView() { return &m_view; }
 sf::Vector2u Window::GetWindowSize(){ return m_windowSize; }
 
 void Window::ToggleFullscreen(){
@@ -50,7 +54,8 @@ void Window::Update(){
 		if (event.type == sf::Event::Resized) {
 			// update the view to the new size of the window
 			sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
-			m_window.setView(sf::View(visibleArea));
+			m_view.reset(visibleArea);
+			m_window.setView(m_view);
 		}
 	}
 }

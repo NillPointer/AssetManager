@@ -11,22 +11,22 @@ public:
 	Game();
 	~Game();
 
-	void HandleInput();
-	void Update();
-	void Render();
+	void handleInput();
+	void update();
+	void render();
 
-	sf::Time GetElapsed();
-	void RestartClock();
+	sf::Time getElapsed();
+	void restartClock();
 
-	Window* GetWindow();
+	Window* getWindow();
 private:
-	void ShowTileEditing();
+	void showTileEditing();
 
 	Window m_window;
 	sf::Clock m_clock;
 	float m_elapsed;
-	TileMap m_Map;
-	TextureHolder m_TextureHolder;
-	sf::Texture *m_SelectedTexture = nullptr;
+	TileMap m_map;
+	TextureHolder m_textureHolder;
+	sf::Texture *m_selectedTexture = nullptr;
 };
 #endif /* GAME_HPP */

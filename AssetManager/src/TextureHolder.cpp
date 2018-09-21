@@ -1,5 +1,4 @@
 #include "TextureHolder.hpp"
-#include <stdlib.h>
 
 TextureHolder::TextureHolder() {}
 
