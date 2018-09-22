@@ -100,8 +100,7 @@ void Game::showTileEditing() {
 				getWindow()->resetView();
 			}
 			ImGui::MenuItem("Draw Grid", nullptr, &m_drawGrid);
-			ImGui::ColorEdit3("Change Background", getWindow()->getColour(), ImGuiColorEditFlags_HEX | ImGuiColorEditFlags_Uint8);
-			printf("%f %f %f\n", getWindow()->getColour()[0], getWindow()->getColour()[1], getWindow()->getColour()[2]);
+			ImGui::ColorEdit3("Change Background", getWindow()->getColour(), ImGuiColorEditFlags_Uint8 | ImGuiColorEditFlags_HEX);
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();

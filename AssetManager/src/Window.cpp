@@ -28,7 +28,9 @@ void Window::destroy(){
 	m_window.close();
 }
 
-void Window::beginDraw(){ m_window.clear(sf::Color(m_backgroundColour[0], m_backgroundColour[1], m_backgroundColour[2],0)); }
+void Window::beginDraw(){
+	m_window.clear(sf::Color(m_backgroundColour[0] * 255, m_backgroundColour[1] * 255, m_backgroundColour[2] * 255,0)); 
+}
 void Window::endDraw(){ m_window.display(); }
 
 bool Window::isDone(){ return m_isDone; }
