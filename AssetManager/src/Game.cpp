@@ -33,6 +33,7 @@ void Game::handleInput() {
 		//left
 	}
 
+	// Moving around the world with middle mouse button
 	sf::Vector2f dragDelta(ImGui::GetMouseDragDelta(sf::Mouse::Middle, 75));
 	if (abs(dragDelta.x) > abs(dragDelta.y)) {
 		dragDelta.y = 0;
@@ -50,6 +51,7 @@ void Game::handleInput() {
 
 	auto mousePos = sf::Mouse::getPosition(*getWindow()->getRenderWindow());
 
+	// Placing or removing tiles
 	if (ImGui::IsMouseClicked(sf::Mouse::Left) && ImGui::GetMousePos().x > TILE_EDITING_WINDOW_WIDTH) {
 		if (m_selectedTexture == nullptr) return;
 		sf::Vector2i pos((int)round(mousePos.x / 32) * 32, (int)round(mousePos.y / 32) * 32);
@@ -61,7 +63,12 @@ void Game::handleInput() {
 		}
 	} else if (ImGui::IsMouseClicked(sf::Mouse::Right) && ImGui::GetMousePos().x > 32 * 6.7f) {
 		sf::Vector2i pos((int)round(mousePos.x / 32) * 32, (int)round(mousePos.y / 32) * 32);
-		m_map.remove(getWindow()->getRenderWindow()->mapPixelToCoords(pos));
+		for (int x = 1, right = m_tilesToPlace.x / 2; x <= m_tilesToPlace.x; ++x, --right) {
+			for (int y = 1, top = m_tilesToPlace.y / 2; y <= m_tilesToPlace.y; ++y, --top) {
+				sf::Vector2i tilePos({ pos.x - (right * 32), pos.y - (top * 32) });
+				m_map.remove(getWindow()->getRenderWindow()->mapPixelToCoords(tilePos));
+			}
+		}
 		m_selectedTexture = nullptr;
 	}
 }
@@ -113,6 +120,10 @@ void Game::drawTileEditing() {
 		ImGui::EndMenuBar();
 	}
 	
+	auto wheel = ImGui::GetIO().MouseWheel;
+	if (m_tilesToPlace.x + wheel > 0) m_tilesToPlace.x += (int)wheel;
+	if (m_tilesToPlace.y + wheel > 0) m_tilesToPlace.y += (int)wheel;
+
 	for (int i = 0; i < m_textureHolder.getCount(); i++) {
 		auto tex = m_textureHolder.GetTexture("terrain" + std::to_string(i));
 		if (i % 4 != 0) ImGui::SameLine();
