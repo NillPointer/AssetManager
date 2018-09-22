@@ -6,7 +6,8 @@ void TileMap::add(Tile tile) {
 
 void TileMap::remove(const sf::Vector2f &tilePos) {
 	m_map.remove_if([&tilePos](const Tile& value) {
-		return value.getPosition() == tilePos;
+		return round(value.getPosition().x) == round(tilePos.x) &&
+			round(value.getPosition().y) == round(tilePos.y);
 	});
 }
 

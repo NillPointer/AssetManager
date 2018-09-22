@@ -1,13 +1,13 @@
 #include <math.h>
-#include "Game.h"
+#include "Game.hpp"
 
-Game::Game() : m_window("Tiling", sf::Vector2u(800, 600))
-
-{
+Game::Game() : m_window("Tiling", sf::Vector2u(800, 600)) {
 	m_clock.restart();
 	srand(static_cast<unsigned int>(time(nullptr)));
 
 	m_elapsed = 0.0f;
+	m_selectedTexture = nullptr;
+	m_drawGrid = true;
 	m_textureHolder.Load("resources/terrain.png", "terrain",{ 32,32 });
 }
 
@@ -15,7 +15,9 @@ Game::~Game(){}
 
 sf::Time Game::getElapsed(){ return m_clock.getElapsedTime(); }
 void Game::restartClock(){ m_elapsed += m_clock.restart().asSeconds(); }
-Window* Game::getWindow(){ return &m_window; }
+Window *Game::getWindow(){ return &m_window; }
+TextureHolder *Game::getTextureHolder() { return &m_textureHolder; }
+void Game::setSelectedTexture(sf::Texture * texture) { m_selectedTexture = texture; }
 
 void Game::handleInput() {
 	// Input handling.
@@ -42,71 +44,50 @@ void Game::handleInput() {
 		else if (dragDelta.y < 0) dragDelta.y = -1;
 		else dragDelta.y = 0;
 	}
-	m_window.GetView()->move(-32.0f * dragDelta);
-	m_window.GetRenderWindow()->setView(*m_window.GetView());
+	getWindow()->getView()->move(-32.0f * dragDelta);
+	getWindow()->resetView();
 
 	if (ImGui::IsMouseClicked(sf::Mouse::Left) && ImGui::GetMousePos().x > 32 * 6.7f) {
 		if (m_selectedTexture == nullptr) return;
 		Tile tile(m_selectedTexture);
-		auto mousePos = sf::Mouse::getPosition(*m_window.GetRenderWindow());
+		auto mousePos = sf::Mouse::getPosition(*getWindow()->getRenderWindow());
 		sf::Vector2i pos((int)round(mousePos.x / 32) * 32, (int)round(mousePos.y / 32) * 32);
-		sf::Vector2f tilePos = m_window.GetRenderWindow()->mapPixelToCoords(pos);
+		sf::Vector2f tilePos = getWindow()->getRenderWindow()->mapPixelToCoords(pos);
 		tile.setTilePosition(tilePos);
 		m_map.add(tile);
 	} else if (ImGui::IsMouseClicked(sf::Mouse::Right) && ImGui::GetMousePos().x > 32 * 6.7f) {
-		auto mousePos = sf::Mouse::getPosition(*m_window.GetRenderWindow());
+		auto mousePos = sf::Mouse::getPosition(*getWindow()->getRenderWindow());
 		sf::Vector2i pos((int)round(mousePos.x / 32) * 32, (int)round(mousePos.y / 32) * 32);
-		sf::Vector2f tilePos = m_window.GetRenderWindow()->mapPixelToCoords(pos);
+		sf::Vector2f tilePos = getWindow()->getRenderWindow()->mapPixelToCoords(pos);
 		m_map.remove(tilePos);
+		m_selectedTexture = nullptr;
 	}
 }
 
-void Game::update(){
-	m_window.Update();
-	ImGui::SFML::Update(*m_window.GetRenderWindow(), getElapsed());
+void Game::update() {
+	getWindow()->update();
+	ImGui::SFML::Update(*getWindow()->getRenderWindow(), getElapsed());
 	showTileEditing();
 }
 
 void Game::render(){
-	m_window.BeginDraw();
+	getWindow()->beginDraw();
 	// Render here.
+	ImGui::ShowDemoWindow();
 
-	m_window.Draw(m_map);
+	getWindow()->draw(m_map);
 
-	sf::VertexArray lines(sf::Lines, 2 * (int)round(ImGui::GetIO().DisplaySize.x / 32));
-	int i = 0;
-	for (int n = 32; n < ImGui::GetIO().DisplaySize.x; n += 32) {
-		lines[i++].position = m_window.GetRenderWindow()->mapPixelToCoords({ n, 0 });
-		lines[i++].position = m_window.GetRenderWindow()->mapPixelToCoords({ n, (int)ImGui::GetIO().DisplaySize.y });
-	}
+	if (m_drawGrid) drawGrid();
 
-	m_window.GetRenderWindow()->draw(lines);
-
-	i = 0;
-	lines.clear();
-	lines.resize(2 * (int)round(ImGui::GetIO().DisplaySize.y / 32));
-	for(int n = 32; n < ImGui::GetIO().DisplaySize.y; n += 32) {
-		lines[i++].position = m_window.GetRenderWindow()->mapPixelToCoords({ 0, n });
-		lines[i++].position = m_window.GetRenderWindow()->mapPixelToCoords({ (int)ImGui::GetIO().DisplaySize.x, n });
-	}
-
-	m_window.GetRenderWindow()->draw(lines);
-
-	ImGui::SFML::Render(*m_window.GetRenderWindow());
-	m_window.EndDraw();
+	ImGui::SFML::Render(*getWindow()->getRenderWindow());
+	getWindow()->endDraw();
 }
 
 void Game::showTileEditing() {
-	ImGuiWindowFlags window_flags = 0;
-	window_flags |= ImGuiWindowFlags_NoMove;
-	window_flags |= ImGuiWindowFlags_NoResize;
-	window_flags |= ImGuiWindowFlags_MenuBar;
-	window_flags |= ImGuiWindowFlags_NoCollapse;
-
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(32 * 6.7f, ImGui::GetIO().DisplaySize.y));
+	ImGui::SetNextWindowSize(ImVec2(TILE_EDITING_WINDOW_WIDTH, ImGui::GetIO().DisplaySize.y));
 
-	if (!ImGui::Begin("Tile Editor", nullptr, window_flags)) {
+	if (!ImGui::Begin("Tile Editor", nullptr, TILE_EDIT_WINDOW_FLAGS)) {
 		// Early out if the window is collapsed, as an optimization.
 		ImGui::End();
 		return;
@@ -115,9 +96,12 @@ void Game::showTileEditing() {
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("Menu")) {
 			if (ImGui::MenuItem("Reset View", nullptr, nullptr)) {
-				m_window.GetView()->setCenter({ 0,0 });
-				m_window.GetRenderWindow()->setView(*m_window.GetView());
+				getWindow()->getView()->setCenter({ 0,0 });
+				getWindow()->resetView();
 			}
+			ImGui::MenuItem("Draw Grid", nullptr, &m_drawGrid);
+			ImGui::ColorEdit3("Change Background", getWindow()->getColour(), ImGuiColorEditFlags_HEX | ImGuiColorEditFlags_Uint8);
+			printf("%f %f %f\n", getWindow()->getColour()[0], getWindow()->getColour()[1], getWindow()->getColour()[2]);
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();
@@ -131,4 +115,25 @@ void Game::showTileEditing() {
 		ImGui::PopID();
 	}
 	ImGui::End();
+}
+
+void Game::drawGrid() {
+	sf::VertexArray lines(sf::Lines, 2 * (int)round(ImGui::GetIO().DisplaySize.x / 32));
+	int i = 0;
+	for (int n = 0; n < ImGui::GetIO().DisplaySize.x; n += 32) {
+		lines[i++].position = getWindow()->getRenderWindow()->mapPixelToCoords({ n, 0 });
+		lines[i++].position = getWindow()->getRenderWindow()->mapPixelToCoords({ n, (int)ImGui::GetIO().DisplaySize.y });
+	}
+
+	getWindow()->getRenderWindow()->draw(lines);
+
+	i = 0;
+	lines.clear();
+	lines.resize(2 * (int)round(ImGui::GetIO().DisplaySize.y / 32));
+	for (int n = 32; n < ImGui::GetIO().DisplaySize.y; n += 32) {
+		lines[i++].position = getWindow()->getRenderWindow()->mapPixelToCoords({ 0, n });
+		lines[i++].position = getWindow()->getRenderWindow()->mapPixelToCoords({ (int)ImGui::GetIO().DisplaySize.x, n });
+	}
+
+	getWindow()->getRenderWindow()->draw(lines);
 }

@@ -20,11 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AssetManager.hpp" />
-    <ClInclude Include="include\Game.h" />
+    <ClInclude Include="include\core.hpp" />
+    <ClInclude Include="include\Game.hpp" />
     <ClInclude Include="include\TextureHolder.hpp" />
     <ClInclude Include="include\Tile.hpp" />
     <ClInclude Include="include\TileMap.hpp" />
-    <ClInclude Include="include\Window.h" />
+    <ClInclude Include="include\Window.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="resources\arial.ttf" />

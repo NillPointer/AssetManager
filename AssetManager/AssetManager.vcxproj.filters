@@ -18,19 +18,22 @@
     <ClInclude Include="include\AssetManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\TileMap.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\TextureHolder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Tile.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\core.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Window.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Game.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

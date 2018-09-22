@@ -1,7 +1,7 @@
 #ifndef TILE_HPP
 #define TILE_HPP
 
-#include "Window.h"
+#include "Window.hpp"
 #include <string>
 
 class Tile : public sf::Drawable, public sf::Transformable {
