@@ -25,6 +25,7 @@ private:
 	void drawTileEditing();
 	void drawSelectedTexture();
 	void drawGrid();
+	void drawPlacementBox();
 
 	Window m_window;
 	sf::Clock m_clock;

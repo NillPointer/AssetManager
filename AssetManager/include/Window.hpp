@@ -38,7 +38,7 @@ private:
 	std::string m_windowTitle;
 	bool m_isDone;
 	bool m_isFullscreen;
-	float m_backgroundColour[3] = { 125, 125, 125 };
+	float m_backgroundColour[3];
 };
 
 #endif /* WINDOW_HPP */

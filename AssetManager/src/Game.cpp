@@ -53,12 +53,6 @@ void Game::handleInput() {
 	if (ImGui::IsMouseClicked(sf::Mouse::Left) && ImGui::GetMousePos().x > TILE_EDITING_WINDOW_WIDTH) {
 		if (m_selectedTexture == nullptr) return;
 		sf::Vector2i pos((int)round(mousePos.x / 32) * 32, (int)round(mousePos.y / 32) * 32);
-		/*for (int x = 1; x <= m_tilesToPlace.x; ++x) {
-			for (int y = 1; y <= m_tilesToPlace.y; ++y) {
-				sf::Vector2i tilePos({ pos.x + (x * 32), pos.y + (y * 32) });
-				m_map.add(Tile(m_selectedTexture, getWindow()->getRenderWindow()->mapPixelToCoords(tilePos)));
-			}
-		}*/
 		for (int x = 1, right = m_tilesToPlace.x / 2; x <= m_tilesToPlace.x; ++x, --right) {
 			for (int y = 1, top = m_tilesToPlace.y / 2; y <= m_tilesToPlace.y; ++y, --top) {
 				sf::Vector2i tilePos({ pos.x - (right * 32), pos.y - (top * 32) });
@@ -84,6 +78,8 @@ void Game::render(){
 
 	getWindow()->draw(m_map);
 	if (m_drawGrid) drawGrid();
+	drawPlacementBox();
+
 	drawTileEditing();
 	if (m_selectedTexture != nullptr) drawSelectedTexture();
 	ImGui::SFML::Render(*getWindow()->getRenderWindow());
@@ -146,6 +142,20 @@ void Game::drawGrid() {
 	}
 
 	getWindow()->getRenderWindow()->draw(lines);
+}
+
+void Game::drawPlacementBox() {
+	auto mousePos = sf::Mouse::getPosition(*getWindow()->getRenderWindow());
+	sf::Vector2i pos((int)round(mousePos.x / 32) * 32, (int)round(mousePos.y / 32) * 32);
+	sf::VertexArray box(sf::Quads, 4);
+	box[0].position = getWindow()->getRenderWindow()->mapPixelToCoords({ pos.x - (m_tilesToPlace.x / 2 * 32), pos.y - (m_tilesToPlace.y / 2 * 32) });
+	box[1].position = getWindow()->getRenderWindow()->mapPixelToCoords({ pos.x + ((m_tilesToPlace.x + 1) / 2 * 32), pos.y - (m_tilesToPlace.y / 2 * 32) });
+	box[2].position = getWindow()->getRenderWindow()->mapPixelToCoords({ pos.x + ((m_tilesToPlace.x + 1) / 2 * 32), pos.y + ((m_tilesToPlace.y + 1) / 2 * 32) });
+	box[3].position = getWindow()->getRenderWindow()->mapPixelToCoords({ pos.x - (m_tilesToPlace.x / 2 * 32), pos.y + ((m_tilesToPlace.y + 1) / 2 * 32) });
+	for (int i = 0; i < 4; ++i) {
+		box[i].color = sf::Color(255, 255, 255, 100);
+	}
+	getWindow()->draw(box);
 }
 
 void Game::drawSelectedTexture() {

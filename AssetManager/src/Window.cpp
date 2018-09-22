@@ -10,6 +10,7 @@ void Window::setup(const std::string title, const sf::Vector2u& size){
 	m_windowSize = size;
 	m_isFullscreen = false;
 	m_isDone = false;
+	std::copy(DEFAULT_BACKGROUND_COLOUR, DEFAULT_BACKGROUND_COLOUR + 3, m_backgroundColour);
 	create();
 }
 
