@@ -114,7 +114,9 @@ void Game::drawTileEditing() {
 			ImGui::Spacing();
 			ImGui::Text("Tiles To Place:");
 			ImGui::InputInt("Rows", &m_tilesToPlace.x);
+			if (m_tilesToPlace.x < 1) m_tilesToPlace.x = 1;
 			ImGui::InputInt("Columns", &m_tilesToPlace.y);
+			if (m_tilesToPlace.y < 1) m_tilesToPlace.y = 1;
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();
