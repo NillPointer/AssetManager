@@ -1,10 +1,12 @@
 #include "Tile.hpp"
 
-Tile::Tile(sf::Texture *texture) : m_texture(texture), m_vertices(sf::Quads, 4) {
+Tile::Tile(sf::Texture *texture, sf::Vector2f pos) : m_texture(texture), m_vertices(sf::Quads, 4) {
 	m_vertices[0].texCoords = { 0 , 0 };
 	m_vertices[1].texCoords = { 32 , 0 };
 	m_vertices[2].texCoords = { 32 , 32 };
 	m_vertices[3].texCoords = { 0 , 32 };
+
+	setTilePosition(pos);
 }
 
 sf::Texture *Tile::getTexture(){

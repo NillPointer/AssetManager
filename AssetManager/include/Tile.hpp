@@ -6,7 +6,8 @@
 
 class Tile : public sf::Drawable, public sf::Transformable {
 public:
-	Tile(sf::Texture *texture);
+	Tile(sf::Texture *texture, sf::Vector2f pos);
+	Tile(sf::Texture *texture) : Tile(texture, { 0,0 }) {};
 	sf::Texture *getTexture();
 	void setTexture(sf::Texture *texture);
 	void setTilePosition(const sf::Vector2f& v);

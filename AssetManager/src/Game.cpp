@@ -8,6 +8,7 @@ Game::Game() : m_window("Tiling", sf::Vector2u(800, 600)) {
 	m_elapsed = 0.0f;
 	m_selectedTexture = nullptr;
 	m_drawGrid = true;
+	m_tilesToPlace = { 1,1 };
 	m_textureHolder.Load("resources/terrain.png", "terrain",{ 32,32 });
 }
 
@@ -47,19 +48,26 @@ void Game::handleInput() {
 	getWindow()->getView()->move(-32.0f * dragDelta);
 	getWindow()->resetView();
 
-	if (ImGui::IsMouseClicked(sf::Mouse::Left) && ImGui::GetMousePos().x > 32 * 6.7f) {
+	auto mousePos = sf::Mouse::getPosition(*getWindow()->getRenderWindow());
+
+	if (ImGui::IsMouseClicked(sf::Mouse::Left) && ImGui::GetMousePos().x > TILE_EDITING_WINDOW_WIDTH) {
 		if (m_selectedTexture == nullptr) return;
-		Tile tile(m_selectedTexture);
-		auto mousePos = sf::Mouse::getPosition(*getWindow()->getRenderWindow());
 		sf::Vector2i pos((int)round(mousePos.x / 32) * 32, (int)round(mousePos.y / 32) * 32);
-		sf::Vector2f tilePos = getWindow()->getRenderWindow()->mapPixelToCoords(pos);
-		tile.setTilePosition(tilePos);
-		m_map.add(tile);
+		/*for (int x = 1; x <= m_tilesToPlace.x; ++x) {
+			for (int y = 1; y <= m_tilesToPlace.y; ++y) {
+				sf::Vector2i tilePos({ pos.x + (x * 32), pos.y + (y * 32) });
+				m_map.add(Tile(m_selectedTexture, getWindow()->getRenderWindow()->mapPixelToCoords(tilePos)));
+			}
+		}*/
+		for (int x = 1, right = m_tilesToPlace.x / 2; x <= m_tilesToPlace.x; ++x, --right) {
+			for (int y = 1, top = m_tilesToPlace.y / 2; y <= m_tilesToPlace.y; ++y, --top) {
+				sf::Vector2i tilePos({ pos.x - (right * 32), pos.y - (top * 32) });
+				m_map.add(Tile(m_selectedTexture, getWindow()->getRenderWindow()->mapPixelToCoords(tilePos)));
+			}
+		}
 	} else if (ImGui::IsMouseClicked(sf::Mouse::Right) && ImGui::GetMousePos().x > 32 * 6.7f) {
-		auto mousePos = sf::Mouse::getPosition(*getWindow()->getRenderWindow());
 		sf::Vector2i pos((int)round(mousePos.x / 32) * 32, (int)round(mousePos.y / 32) * 32);
-		sf::Vector2f tilePos = getWindow()->getRenderWindow()->mapPixelToCoords(pos);
-		m_map.remove(tilePos);
+		m_map.remove(getWindow()->getRenderWindow()->mapPixelToCoords(pos));
 		m_selectedTexture = nullptr;
 	}
 }
@@ -67,23 +75,22 @@ void Game::handleInput() {
 void Game::update() {
 	getWindow()->update();
 	ImGui::SFML::Update(*getWindow()->getRenderWindow(), getElapsed());
-	showTileEditing();
 }
 
 void Game::render(){
 	getWindow()->beginDraw();
 	// Render here.
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 
 	getWindow()->draw(m_map);
-
 	if (m_drawGrid) drawGrid();
-
+	drawTileEditing();
+	if (m_selectedTexture != nullptr) drawSelectedTexture();
 	ImGui::SFML::Render(*getWindow()->getRenderWindow());
 	getWindow()->endDraw();
 }
 
-void Game::showTileEditing() {
+void Game::drawTileEditing() {
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::SetNextWindowSize(ImVec2(TILE_EDITING_WINDOW_WIDTH, ImGui::GetIO().DisplaySize.y));
 
@@ -101,6 +108,10 @@ void Game::showTileEditing() {
 			}
 			ImGui::MenuItem("Draw Grid", nullptr, &m_drawGrid);
 			ImGui::ColorEdit3("Change Background", getWindow()->getColour(), ImGuiColorEditFlags_Uint8 | ImGuiColorEditFlags_HEX);
+			ImGui::Spacing();
+			ImGui::Text("Tiles To Place:");
+			ImGui::InputInt("Rows", &m_tilesToPlace.x);
+			ImGui::InputInt("Columns", &m_tilesToPlace.y);
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();
@@ -135,4 +146,22 @@ void Game::drawGrid() {
 	}
 
 	getWindow()->getRenderWindow()->draw(lines);
+}
+
+void Game::drawSelectedTexture() {
+	ImGuiWindowFlags flags{ ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
+	ImGuiWindowFlags_NoTitleBar};
+
+	ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x - 60, 0));
+	ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, 60));
+	ImGui::SetNextWindowBgAlpha(0.5f);
+	if (!ImGui::Begin("Selected Texture", nullptr, flags)) {
+		// Early out if the window is collapsed, as an optimization.
+		ImGui::End();
+		return;
+	}
+
+	ImGui::Image(*m_selectedTexture, { 45,45 }, sf::Color::White, sf::Color::Red);
+
+	ImGui::End();
 }

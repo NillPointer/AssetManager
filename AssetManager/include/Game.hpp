@@ -22,7 +22,8 @@ public:
 	TextureHolder *getTextureHolder();
 	void setSelectedTexture(sf::Texture * texture);
 private:
-	void showTileEditing();
+	void drawTileEditing();
+	void drawSelectedTexture();
 	void drawGrid();
 
 	Window m_window;
@@ -32,5 +33,6 @@ private:
 	TextureHolder m_textureHolder;
 	sf::Texture *m_selectedTexture;
 	bool m_drawGrid;
+	sf::Vector2i m_tilesToPlace;
 };
 #endif /* GAME_HPP */
