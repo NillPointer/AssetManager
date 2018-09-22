@@ -15,5 +15,8 @@ constexpr float DEFAULT_BACKGROUND_COLOUR[3] = { 0.2f, 0.2f, 0.2f };
 constexpr ImGuiWindowFlags TILE_EDIT_WINDOW_FLAGS{ ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
 ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse };
 
+constexpr ImGuiWindowFlags SELECTED_TEXTURE_WINDOW_FLAGS{ ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse |
+ImGuiWindowFlags_NoTitleBar };
+
 #endif /* CORE_HPP */
 

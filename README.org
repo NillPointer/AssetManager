@@ -4,7 +4,7 @@
 * SFML AssetManager
 This application is a gui based asset manager for spritesheets, sprites, fonts and audio assets.
 [[https://www.sfml-dev.org/][SFML]] graphics library is used to create this project and the GUI is implemented using the [[https://github.com/ocornut/imgui][ImGUI]] library
-with SFML support.
+with SFML support. Additional library [[https://github.com/mlabbe/nativefiledialog][Native File Dialog]] is used to provide a dialog for selecting spritesheets.
 
 * Design
 To design this asset manager I followed the [[http://gameprogrammingpatterns.com/][Game Programming Patterns]] book flyweight pattern

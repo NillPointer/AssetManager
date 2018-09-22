@@ -35,5 +35,7 @@ private:
 	sf::Texture *m_selectedTexture;
 	bool m_drawGrid;
 	sf::Vector2i m_tilesToPlace;
+	sf::Vector2i m_mousePosition;
+	char m_tempTextureName[128];
 };
 #endif /* GAME_HPP */

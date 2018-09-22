@@ -9,13 +9,14 @@
 class TextureHolder{
 public:
 	TextureHolder();
-	void Load(std::string filename, std::string textureName, sf::Vector2u spriteSize);
-	sf::Texture *GetTexture(std::string const& filename);
-	int getCount();
+	void load(std::string filename, std::string textureName, sf::Vector2u spriteSize);
+	std::map<std::string, sf::Texture> &getTextures();
+	sf::Texture *getTexture(std::string filename);
+	std::vector<std::string> &TextureHolder::getTextureNames();
 
 private:
-	std::map<std::string, sf::Texture> m_Textures;
-	sf::Image m_Image;
+	std::vector<std::string> m_textureNames;
+	std::map<std::string, sf::Texture> m_textures;
 };
 
 
