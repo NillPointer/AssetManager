@@ -22,6 +22,7 @@
     <ClInclude Include="include\AssetManager.hpp" />
     <ClInclude Include="include\core.hpp" />
     <ClInclude Include="include\Game.hpp" />
+    <ClInclude Include="include\UI.hpp" />
     <ClInclude Include="include\TextureHolder.hpp" />
     <ClInclude Include="include\Tile.hpp" />
     <ClInclude Include="include\TileMap.hpp" />
@@ -59,6 +60,7 @@
     <ClCompile Include="src\TextureHolder.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\TileMap.cpp" />
+    <ClCompile Include="src\UI.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -132,12 +134,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)AssetManager/resources;$(SolutionDir)AssetManager/include;$(SolutionDir)dev/include;$(SolutionDir)IMGUI;$(SolutionDir)NativeFileDialog/include;C:\dev\SFML\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)AssetManager/resources;$(SolutionDir)AssetManager/include;$(SolutionDir)dev/include;$(SolutionDir)IMGUI;$(SolutionDir)NativeFileDialog/include;$(SolutionDir)SFML/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\dev\SFML\lib;$(SolutionDir)IMGUI/lib;$(SolutionDir)NativeFileDialog/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)SFML/lib;$(SolutionDir)IMGUI/lib;$(SolutionDir)NativeFileDialog/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;nfd_d.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

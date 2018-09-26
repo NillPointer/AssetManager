@@ -1,7 +1,9 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
+#include "core.hpp"
 #include "Window.hpp"
+#include "UI.hpp"
 #include "TileMap.hpp"
 #include "AssetManager.hpp"
 #include "TextureHolder.hpp"
@@ -19,23 +21,12 @@ public:
 	void restartClock();
 
 	Window *getWindow();
-	TextureHolder *getTextureHolder();
-	void setSelectedTexture(sf::Texture * texture);
+	TileMap *getTileMap();
 private:
-	void drawTileEditing();
-	void drawSelectedTexture();
-	void drawGrid();
-	void drawPlacementBox();
-
 	Window m_window;
+	UI m_ui;
+	TileMap m_map;
 	sf::Clock m_clock;
 	float m_elapsed;
-	TileMap m_map;
-	TextureHolder m_textureHolder;
-	sf::Texture *m_selectedTexture;
-	bool m_drawGrid;
-	sf::Vector2i m_tilesToPlace;
-	sf::Vector2i m_mousePosition;
-	char m_tempTextureName[128];
 };
 #endif /* GAME_HPP */

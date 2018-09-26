@@ -1,7 +1,6 @@
 #ifndef TILEMAP_HPP
 #define TILEMAP_HPP
 
-#include <string>
 #include <list>
 #include "Tile.hpp"
 
