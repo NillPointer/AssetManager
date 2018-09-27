@@ -1,14 +1,16 @@
+#include <fstream>
+#include <iostream>
 #include <nfd.h>
 #include "UI.hpp"
 
-UI::UI(Window *window) : m_gameWindow(window), m_drawGrid(true), m_tilesToPlace({ 1,1 }), m_mousePosition({ 0,0 })
-{
-	strcpy_s(m_tempTextureName, "");
-}
+UI::UI(Window *window) : m_gameWindow(window), m_drawGrid(true), m_tilesToPlace({ 1,1 }), m_mousePosition({ 0,0 }), m_saveMap(false)
+{}
 
 TextureHolder &UI::getTextureHolder() { return m_textureHolder; }
 sf::Texture &UI::getSelectedTexture() { return *m_selectedTexture; }
 sf::Vector2i &UI::getMousePosition() { return m_mousePosition; }
+bool &UI::getSaveMap() { return m_saveMap; }
+bool &UI::getLoadMap() { return m_loadMap; }
 
 void UI::drawEditingWindow() {
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -45,16 +47,18 @@ void UI::drawEditingWindowMenu() {
 
 	if (ImGui::BeginMenuBar()) {
 		if (ImGui::BeginMenu("Menu")) {
-			ImGui::InputText("Name Sprite Set", m_tempTextureName, IM_ARRAYSIZE(m_tempTextureName));
 			if (ImGui::MenuItem("Load Spritesheet", nullptr, nullptr)) {
 				nfdchar_t *outPath = nullptr;
 				nfdresult_t result = NFD_OpenDialog("png,jpg", "", &outPath);
 				if (result == NFD_OKAY) {
-					m_textureHolder.load(outPath, m_tempTextureName, { 32,32 });
-					strcpy_s(m_tempTextureName, "");
+					m_textureHolder.load(outPath, { 32,32 });
 					free(outPath);
 				}
 			}
+			ImGui::Separator();
+			ImGui::MenuItem("Save Map", nullptr, &m_saveMap, !m_saveMap);
+			ImGui::Separator();
+			ImGui::MenuItem("Load Map", nullptr, &m_loadMap, !m_loadMap);
 			ImGui::Separator();
 			if (ImGui::MenuItem("Reset View", nullptr, nullptr)) {
 				m_gameWindow->getView()->setCenter({ 0,0 });
@@ -156,4 +160,68 @@ void UI::handleUiInputs(TileMap &map) {
 			}
 		}
 	}
+}
+
+void UI::saveMap(TileMap &map) {
+	std::ofstream mapFile;
+	nfdchar_t *outPath = nullptr;
+
+	nlohmann::json jsonMap;
+
+	for (Tile &tile : map.getMap()) {
+		auto textureName = m_textureHolder.getTextureName(&tile.getTexture());
+		jsonMap["Map"][textureName] += { tile.getPosition().x, tile.getPosition().y };
+	}
+
+	jsonMap["Textures"] = m_textureHolder.getTextureFilenames();
+
+	nfdresult_t result = NFD_SaveDialog("json", "", &outPath);
+	if (result != NFD_OKAY) {
+		free(outPath);
+		printf("Failed To Save\n");
+		return;
+	}
+	mapFile.open(outPath);
+
+	mapFile << jsonMap.dump(4);
+
+	mapFile.close();
+	free(outPath);
+	m_saveMap = false;
+}
+
+void UI::loadMap(TileMap &map) {
+	std::ifstream mapFile;
+	std::string mapString;
+	nfdchar_t *outPath = nullptr;
+	nlohmann::json jsonMap;
+
+	nfdresult_t result = NFD_OpenDialog("json", "", &outPath);
+	if (result != NFD_OKAY) {
+		free(outPath);
+		printf("Failed To Load Map\n");
+		return;
+	}
+	mapFile.open(outPath);
+
+	mapFile.seekg(0, std::ios::end);
+	mapString.reserve(mapFile.tellg());
+	mapFile.seekg(0, std::ios::beg);
+	mapString.assign((std::istreambuf_iterator<char>(mapFile)), std::istreambuf_iterator<char>());
+	mapFile.close();
+	free(outPath);
+
+	jsonMap = nlohmann::json::parse(mapString);
+
+	for(std::string textureFileName : jsonMap["Textures"]) {
+		m_textureHolder.load(textureFileName, { 32,32 });
+	}
+
+	for (auto &tile : jsonMap["Map"].get<nlohmann::json::object_t>()) {
+		for (auto &pos : jsonMap["Map"][tile.first]) {
+			map.add(Tile(m_textureHolder.getTexture(tile.first), { pos[0], pos[1] }));
+		}
+	}
+
+	m_loadMap = false;
 }

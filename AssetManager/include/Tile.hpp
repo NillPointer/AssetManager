@@ -8,7 +8,7 @@ class Tile : public sf::Drawable, public sf::Transformable {
 public:
 	Tile(sf::Texture *texture, sf::Vector2f pos);
 	Tile(sf::Texture *texture) : Tile(texture, { 0,0 }) {};
-	sf::Texture *getTexture();
+	sf::Texture &getTexture();
 	void setTexture(sf::Texture *texture);
 	void setTilePosition(const sf::Vector2f& v);
 
@@ -17,6 +17,7 @@ private:
 
 	sf::VertexArray m_vertices;
 	sf::Texture *m_texture = nullptr;
+	std::string *m_textureName;
 };
 
 #endif // !TILE_HPP

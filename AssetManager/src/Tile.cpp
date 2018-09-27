@@ -9,13 +9,8 @@ Tile::Tile(sf::Texture *texture, sf::Vector2f pos) : m_texture(texture), m_verti
 	setTilePosition(pos);
 }
 
-sf::Texture *Tile::getTexture(){
-	return m_texture;
-}
-
-void Tile::setTexture(sf::Texture *texture) {
-	m_texture = texture;
-}
+sf::Texture &Tile::getTexture(){ return *m_texture; }
+void Tile::setTexture(sf::Texture *texture) { m_texture = texture; }
 
 void Tile::setTilePosition(const sf::Vector2f& v) {
 	m_vertices[0].position = { getPosition().x , getPosition().y };

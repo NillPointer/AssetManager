@@ -1,5 +1,7 @@
 #include "TileMap.hpp"
 
+std::list<Tile> &TileMap::getMap() { return m_map; }
+
 void TileMap::add(Tile tile) {
 	m_map.emplace_back(tile);
 }

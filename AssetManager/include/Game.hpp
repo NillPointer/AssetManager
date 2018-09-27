@@ -23,6 +23,9 @@ public:
 	Window *getWindow();
 	TileMap *getTileMap();
 private:
+	void checkSavingMap();
+	void checkLoadingMap();
+
 	Window m_window;
 	UI m_ui;
 	TileMap m_map;

@@ -33,6 +33,8 @@ void Game::handleInput() {
 void Game::update() {
 	getWindow()->update();
 	ImGui::SFML::Update(*getWindow()->getRenderWindow(), getElapsed());
+	checkLoadingMap();
+	checkSavingMap();
 }
 
 void Game::render(){
@@ -49,4 +51,16 @@ void Game::render(){
 
 	ImGui::SFML::Render(*getWindow()->getRenderWindow());
 	getWindow()->endDraw();
+}
+
+void Game::checkSavingMap() {
+	if (!m_ui.getSaveMap()) return;
+
+	m_ui.saveMap(m_map);
+}
+
+void Game::checkLoadingMap() {
+	if (!m_ui.getLoadMap()) return;
+
+	m_ui.loadMap(m_map);
 }
