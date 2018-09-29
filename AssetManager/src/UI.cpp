@@ -170,7 +170,7 @@ void UI::saveMap(TileMap &map) {
 
 	for (Tile &tile : map.getMap()) {
 		auto textureName = m_textureHolder.getTextureName(&tile.getTexture());
-		jsonMap["Map"][textureName] += { tile.getPosition().x, tile.getPosition().y };
+		jsonMap["Map"] += { textureName, tile.getPosition().x, tile.getPosition().y };
 	}
 
 	jsonMap["Textures"] = m_textureHolder.getTextureFilenames();
@@ -217,10 +217,8 @@ void UI::loadMap(TileMap &map) {
 		m_textureHolder.load(textureFileName, { 32,32 });
 	}
 
-	for (auto &tile : jsonMap["Map"].get<nlohmann::json::object_t>()) {
-		for (auto &pos : jsonMap["Map"][tile.first]) {
-			map.add(Tile(m_textureHolder.getTexture(tile.first), { pos[0], pos[1] }));
-		}
+	for (auto &tile : jsonMap["Map"]) {
+		map.add(Tile(m_textureHolder.getTexture(tile[0]), { tile[1], tile[2] }));
 	}
 
 	m_loadMap = false;
