@@ -1,7 +1,7 @@
 #+TITLE: SFML AssetManager
 #+AUTHOR: Oleksandr Kononov
 
-* SFML AssetManager
+* Introduction
 This application is a gui based asset manager for spritesheets, sprites, fonts and audio assets.
 SFML graphics library is used to create this project and the GUI is implemented using the IMGUI library
 with SFML support.
