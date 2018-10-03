@@ -81,7 +81,7 @@ void UI::drawEditingWindowMenu() {
 }
 
 void UI::drawGrid() {
-	if (m_gameWindow == nullptr) return;
+	if (m_gameWindow == nullptr || !m_drawGrid) return;
 	sf::VertexArray lines(sf::Lines, ((int)ImGui::GetIO().DisplaySize.x + (int)ImGui::GetIO().DisplaySize.x) / 16);
 	int i = 0;
 	for (int x = (int)(TILE_EDITING_WINDOW_WIDTH / 32) * 32; x < ImGui::GetIO().DisplaySize.x; x += 32) {
