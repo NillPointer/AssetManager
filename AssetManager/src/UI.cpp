@@ -178,7 +178,7 @@ void UI::saveMap(TileMap &map) {
 	nfdresult_t result = NFD_SaveDialog("json", "", &outPath);
 	if (result != NFD_OKAY) {
 		free(outPath);
-		printf("Failed To Save\n");
+		m_saveMap = false;
 		return;
 	}
 	mapFile.open(outPath);
@@ -199,7 +199,7 @@ void UI::loadMap(TileMap &map) {
 	nfdresult_t result = NFD_OpenDialog("json", "", &outPath);
 	if (result != NFD_OKAY) {
 		free(outPath);
-		printf("Failed To Load Map\n");
+		m_loadMap = false;
 		return;
 	}
 	mapFile.open(outPath);
